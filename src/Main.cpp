@@ -5,18 +5,18 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Library General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
 
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <stdio.h>
 //#include <sys/file.h>
 #include <string.h>
@@ -48,7 +48,7 @@ typedef struct												// Create A Structure
 } TextureImage;												// Structure Name
 
 bool loadTGA(TextureImage *texture, char *filename)			// Loads A TGA File Into Memory
-{    
+{
 	GLubyte		TGAheader[12]={0,0,2,0,0,0,0,0,0,0,0,0};	// Uncompressed TGA Header
 	GLubyte		TGAcompare[12];								// Used To Compare TGA Header
 	GLubyte		header[6];									// First 6 Useful Bytes From The Header
@@ -76,7 +76,7 @@ bool loadTGA(TextureImage *texture, char *filename)			// Loads A TGA File Into M
 
 	texture->width  = header[1] * 256 + header[0];			// Determine The TGA Width	(highbyte*256+lowbyte)
 	texture->height = header[3] * 256 + header[2];			// Determine The TGA Height	(highbyte*256+lowbyte)
-    
+
  	if(	texture->width	<=0	||								// Is The Width Less Than Or Equal To Zero
 		texture->height	<=0	||								// Is The Height Less Than Or Equal To Zero
 		(header[4]!=24 && header[4]!=32))					// Is The TGA 24 or 32 Bit?
@@ -116,7 +116,7 @@ bool loadTGA(TextureImage *texture, char *filename)			// Loads A TGA File Into M
 	glBindTexture(GL_TEXTURE_2D, texture[0].texID);			// Bind Our Texture
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtered
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtered
-	
+
 	if (texture[0].bpp==24)									// Was The TGA 24 Bits
 	{
 		type=GL_RGB;										// If So Set The 'type' To GL_RGB
@@ -146,7 +146,7 @@ int loadFileAsString(char *dest, char *fileName){
 		*(temp++)=fgetc(fp);
 	fclose(fp);
 	*(temp)='\0';
-	return strlen(dest);	
+	return strlen(dest);
 }
 
 //------------------------------------------------------------------------------
@@ -161,7 +161,7 @@ int testLoop(int mode){
 
     /* Clean up on exit */
     atexit(SDL_Quit);
-    
+
 	/*
 	switch(mode){
 	case 0:
@@ -178,7 +178,7 @@ int testLoop(int mode){
 		break;
 	}
 	*/
-	
+
 	/*
 	switch(mode){
 	case 0:
@@ -190,66 +190,66 @@ int testLoop(int mode){
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,4) ;
 	}
 	*/
-	
+
     screen = SDL_SetVideoMode((mode==0?XRES:0), (mode==0?YRES:0), 0, SDL_OPENGL|(mode==0?0:SDL_FULLSCREEN));
     if ( screen == NULL ) {
         printf("Couldn't set video mode: %s\n",SDL_GetError());
         exit(1);
     }
-	
-    
+
+
 	GLenum err = glewInit();
 	if (GLEW_OK != err){
 		// Problem: glewInit failed, something is seriously wrong.
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 	}
 	printf("Using GLEW %s\n", glewGetString(GLEW_VERSION));
-	
+
 	if(GLEW_ARB_texture_float)
 		printf("ARB FP texture supported\n");
 	else{
 		printf("ARB FP texture NOT supported\n");
 		exit(-1);
 	}
-	
+
 	if(GLEW_EXT_framebuffer_object)
 		printf("FBO supported\n");
 	else{
 		printf("FBO NOT supported\n");
 		exit(-1);
 	}
-			
+
 	if(GLEW_EXT_framebuffer_multisample)
 		printf("FB multisample supported\n");
-	else	
+	else
 		printf("FB multisample NOT supported\n");
-			
+
 	if(GLEW_ARB_texture_non_power_of_two)
 		printf("npot textures supported\n");
 	else
 		printf("npot textures NOT supported\n");
 
-	
+
 	GLint samples,buffers;
 	glGetIntegerv(GL_SAMPLE_BUFFERS, &buffers);
 	glGetIntegerv(GL_SAMPLES, &samples);
-	
+
 	char *vs,*fs;
-			
+
 	GLint v,f,p;
-	
+
 	vs=(char*)malloc(20000*sizeof(char));
 	fs=(char*)malloc(20000*sizeof(char));
 	printf("loaded vertex shader source: %d bytes\n",loadFileAsString(vs,"../data/stereo.vert"));
 	printf("loaded fragment shader source: %d bytes\n",loadFileAsString(fs,"../data/stereo.frag"));
-		
+
 	const char * vv = vs;
 	const char * ff = fs;
 
-	
+
 	v = glCreateShader(GL_VERTEX_SHADER);
 	f = glCreateShader(GL_FRAGMENT_SHADER);
-	
+
 	glShaderSource(v, 1, &vv,NULL);
 	glShaderSource(f, 1, &ff,NULL);
 
@@ -259,12 +259,12 @@ int testLoop(int mode){
 	glCompileShader(f);
 
 	p = glCreateProgram();
-	
+
 	glAttachShader(p,v);
 	glAttachShader(p,f);
 
 	glLinkProgram(p);
-	
+
 	glValidateProgram(p);
 	int validated;
 	glGetProgramiv(p,GL_VALIDATE_STATUS,&validated);
@@ -273,21 +273,21 @@ int testLoop(int mode){
 	char log[20000];
 	glGetProgramInfoLog(p,20000,NULL,log);
 	printf("program info log:\n%s\n",log);
-	
-	
+
+
 	/*
 	Create a framebuffer object
 	*/
-	
+
 	GLuint fb[1];
-	
+
 	glGenFramebuffersEXT(1,fb);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fb[0]);
 
 	/*
 	Create 3 textures
 	*/
-	
+
 	TextureImage textureToLoad[1];
 	GLuint tex[3];
 
@@ -299,20 +299,20 @@ int testLoop(int mode){
 
 	loadTGA(textureToLoad,"../data/stereo-strip.tga");// the strip texture
 	tex[1]=textureToLoad->texID;
-	
+
 	glBindTexture(GL_TEXTURE_2D,tex[2]);// the temp texture, that contains the distorted strips
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,STRIP_WIDTH,STRIP_HEIGHT,0,GL_RGBA,GL_UNSIGNED_BYTE,NULL);
-	
+
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D,tex[0],0);
 //	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT1_EXT,GL_TEXTURE_2D,tex[1],0);
 
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
-	
+
 	GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 	switch(status) {
 		case GL_FRAMEBUFFER_COMPLETE_EXT:
@@ -326,8 +326,8 @@ int testLoop(int mode){
 			printf("SHIT SHIT SHIT!\n");
 			/* programming error; will fail on all hardware */
 	}
-	
-	
+
+
     gluPerspective(60.0,ASPECT_RATIO,NEAR_PLANE,FAR_PLANE);
 
     glClearColor(0.0,0.0,0.5,1);// we dont't care too much about this
@@ -338,34 +338,34 @@ int testLoop(int mode){
 	glMatrixMode(GL_MODELVIEW);
     glTranslatef(0,0,-2.0);
 	glRotatef(30,1,0,0);
-    
+
     int startTime,oldTime,time;
     int frames=0;
 	startTime=oldTime=time=SDL_GetTicks();
-	
+
 	SDL_WM_SetCaption("Stereogram test",NULL);
 	glColor3f(1.0,1.0,1.0);
 
 	bool quitRequest=false;
 	float offset;
-	while (!quitRequest){    
-		
+	while (!quitRequest){
+
 		if(SDL_QuitRequested()){
 			printf("MANUALLY STOPPED!\n");
 			quitRequest=true;
 		}
 		//todo: add SDL event handling
-		
+
 		frames++;
 
 		/***********************************************************************
 		*                      Main Cycle starts here                          *
 		***********************************************************************/
-		
+
 		/*
 		Draw the teapot depth on a texture
 		*/
-		
+
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fb[0]);// draw to depth texture
 	    glViewport(0,0,RENDER_WIDTH,RENDER_HEIGHT);
 		glClear(GL_DEPTH_BUFFER_BIT);
@@ -379,9 +379,9 @@ int testLoop(int mode){
 		/*
 		Draw the first strip as an offset version of the base noise texture
 		*/
-		
+
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);// draw to main framebuffer
-		
+
 	    glViewport(0,0,STRIP_WIDTH,STRIP_HEIGHT);
 		glDrawBuffer(GL_BACK);
 		glReadBuffer(GL_BACK);
@@ -405,10 +405,10 @@ int testLoop(int mode){
 			glTexCoord2f(offset+0.0,offset+0.0);
 			glVertex2f(0.0,0.0);
 		glEnd();
-		
-		
+
+
 		for(int i=1;i<=7;i++){
-		
+
 			/*
 			Copy the pixels of the previous strip on a texture (tex[2])
 			*/
@@ -416,16 +416,16 @@ int testLoop(int mode){
 			glBindTexture(GL_TEXTURE_2D, tex[2]);//distorted strip texture
 			glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,(i-1)*STRIP_WIDTH,0,STRIP_WIDTH,STRIP_HEIGHT,0);
 
-			
+
 			/*
 			Use the obtained texture to render the successive strip.
 			*/
-			
+
 			glActiveTextureARB(GL_TEXTURE1_ARB);
 			glEnable(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, tex[0]);// depth texture on second texture unit
 
-			
+
 		    glViewport(i*STRIP_WIDTH,0,STRIP_WIDTH,STRIP_HEIGHT);
 			glLoadIdentity();
 			glOrtho(0.0,1.0,0.0,1.0,-1.0,1.0);
@@ -450,18 +450,18 @@ int testLoop(int mode){
 				glMultiTexCoord2fARB(GL_TEXTURE1_ARB,(i-1)/7.0,0.0);
 				glVertex2f(0.0,0.0);
 			glEnd();
-			
+
 			glUseProgram(0);// Disable shader, back to fixed pipeline
-			
+
 			glActiveTextureARB(GL_TEXTURE1_ARB);
 			glDisable(GL_TEXTURE_2D);
 		}
-		
+
 		/*
 		Draw arrows on top of the screen to help aligning the image
 		*/
-		
-		
+
+
 		glActiveTextureARB(GL_TEXTURE0_ARB);
 		glDisable(GL_TEXTURE_2D);
 
@@ -478,9 +478,9 @@ int testLoop(int mode){
 	 	glEnd();
 
 		glPopMatrix();// restore the perspective camera
-		
-		
-/*		
+
+
+/*
 		OLD STUFF
 
 		glActiveTextureARB(GL_TEXTURE0_ARB);
@@ -489,11 +489,11 @@ int testLoop(int mode){
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, tex[1]);
-		
+
 		glUseProgram(p);
 		glUniform1i(glGetUniformLocation(p,"depthTexture"),0);
 		glUniform1i(glGetUniformLocation(p,"noiseTexture"),1);
-		
+
 		//offset=(rand()%256)/64.0;// animate the background ("static" effect :)
 		glBegin(GL_QUADS);
 			glMultiTexCoord2fARB(GL_TEXTURE0_ARB,0.0,1.0);
@@ -510,7 +510,7 @@ int testLoop(int mode){
 			glVertex2f(0.0,0.0);
 		glEnd();
 		glUseProgram(0);
-		
+
 		glActiveTextureARB(GL_TEXTURE1_ARB);
 		glDisable(GL_TEXTURE_2D);
 		glActiveTextureARB(GL_TEXTURE0_ARB);
@@ -523,12 +523,12 @@ int testLoop(int mode){
 			glVertex2f(i+0.50,0.95);
 		}
 		glEnd();
-		
+
 		glPopMatrix();
 */
 		oldTime=time;
 		time=SDL_GetTicks();
-	
+
 	    SDL_GL_SwapBuffers();
 	}
 	printf("Done. Average framerate: %.2f frames per second.\n\n",frames*1000.0/(time-startTime));

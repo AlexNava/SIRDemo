@@ -6,17 +6,15 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug Win32">
+			<Target title="Debug">
 				<Option output="stereo" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="Debug" />
 				<Option object_output="Debug" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-DWIN32" />
-					<Add option="-D_DEBUG" />
-					<Add option="-D_WINDOWS" />
-					<Add option="-W" />
 					<Add option="-g" />
+					<Add option="-W" />
 					<Add option="-O0" />
 					<Add directory="f:/Projects/SDL-1.2.14/include" />
 					<Add directory="f:/Projects/glew-1.6.0/include" />
@@ -30,26 +28,28 @@
 				<Linker>
 					<Add library="SDL" />
 					<Add library="SDLmain" />
-					<Add library="glew32d" />
-					<Add library="freeglut" />
+					<Add library="GL" />
+					<Add library="GLU" />
+					<Add library="glut" />
+					<Add library="GLEW" />
 					<Add directory="f:/Projects/SDL-1.2.14/VisualC/SDL/Debug" />
 					<Add directory="F:/Projects/SDL-1.2.14/VisualC/SDLmain/Debug" />
 					<Add directory="f:/Projects/glew-1.6.0/lib" />
 					<Add directory="f:/Projects/FreeGlut/freeglut-2.6.0/VisualStudio2008/Debug" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="copy /v F:\Projects\SDL-1.2.14\VisualC\SDL\Debug\SDL.dll Debug&#x0D;&#x0A;copy /v f:\Projects\FreeGlut\freeglut-2.6.0\VisualStudio2008\Debug\freeglut.dll Debug&#x0D;&#x0A;copy /v F:\Projects\glew-1.6.0\bin\glew32d.dll Debug&#x0D;&#x0A;" />
+					<Add after="copy /v F:\Projects\SDL-1.2.14\VisualC\SDL\Debug\SDL.dll Debug" />
+					<Add after="copy /v f:\Projects\FreeGlut\freeglut-2.6.0\VisualStudio2008\Debug\freeglut.dll Debug" />
+					<Add after="copy /v F:\Projects\glew-1.6.0\bin\glew32d.dll Debug" />
 				</ExtraCommands>
 			</Target>
-			<Target title="Release Win32">
+			<Target title="Release">
 				<Option output="stereo" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="Release" />
 				<Option object_output="Release" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-DWIN32" />
-					<Add option="-DNDEBUG" />
-					<Add option="-D_WINDOWS" />
 					<Add option="-W" />
 					<Add directory="f:/Projects/SDL-1.2.14/include" />
 					<Add directory="f:/Projects/glew-1.6.0/include" />
@@ -63,24 +63,22 @@
 				<Linker>
 					<Add library="SDL" />
 					<Add library="SDLmain" />
-					<Add library="glew32" />
-					<Add library="freeglut" />
+					<Add library="GL" />
+					<Add library="GLU" />
+					<Add library="glut" />
+					<Add library="GLEW" />
 					<Add directory="f:/Projects/SDL-1.2.14/VisualC/SDL/Release" />
 					<Add directory="F:/Projects/SDL-1.2.14/VisualC/SDLmain/Release" />
 					<Add directory="f:/Projects/glew-1.6.0/lib" />
 					<Add directory="f:/Projects/FreeGlut/freeglut-2.6.0/VisualStudio2008/Release" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="copy /v F:\Projects\SDL-1.2.14\VisualC\SDL\Release\SDL.dll Release&#x0D;&#x0A;copy /v f:\Projects\FreeGlut\freeglut-2.6.0\VisualStudio2008\Release\freeglut.dll Release&#x0D;&#x0A;copy /v F:\Projects\glew-1.6.0\bin\glew32.dll Release&#x0D;&#x0A;" />
+					<Add after="copy /v F:\Projects\SDL-1.2.14\VisualC\SDL\Release\SDL.dll Release" />
+					<Add after="copy /v f:\Projects\FreeGlut\freeglut-2.6.0\VisualStudio2008\Release\freeglut.dll Release" />
+					<Add after="copy /v F:\Projects\glew-1.6.0\bin\glew32.dll Release" />
 				</ExtraCommands>
 			</Target>
 		</Build>
-		<Unit filename="acconfig.h" />
-		<Unit filename="config.h" />
-		<Unit filename="include/SDL.h" />
-		<Unit filename="include/gl.h" />
-		<Unit filename="include/glew.h" />
-		<Unit filename="include/glu.h" />
 		<Unit filename="src/Main.cpp" />
 		<Extensions>
 			<code_completion />

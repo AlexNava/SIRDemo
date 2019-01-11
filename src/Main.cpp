@@ -209,7 +209,8 @@ int testLoop(int mode){
 		printf("ARB FP texture supported\n");
 	else{
 		printf("ARB FP texture NOT supported\n");
-		exit(-1);
+        // ARB_tex_float not available on virtualbox, but glTexImage2D(...GL_FLOAT...) works
+        //exit(-1);
 	}
 
 	if(GLEW_EXT_framebuffer_object)
